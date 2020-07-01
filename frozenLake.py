@@ -41,7 +41,7 @@ def get_strategy(Q):
 def test_strategy(Pi, episodes):
     r_list = []
     j_list = []
-    for i in tqdm(range(episodes)):
+    for i in range(episodes):
         s = env.reset()
         rewards = 0
         d = False
@@ -65,14 +65,19 @@ if __name__ == '__main__':
     Q, r_list = q_learning(env, num_episodes, .1, .3, .95)
     Pi = get_strategy(Q)
 
-    Pi_show = Pi.reshape((4, 4))
     print("Training score:", np.average(r_list))
     print("Strategy:")
-    print(Pi_show)
+    print(Pi.reshape((4, 4)))
+    fig = plt.figure(figsize=(15, 7))
+    ax = fig.add_subplot(121)
+    ax.set_title('train avg rewards')
+    ax.plot(np.cumsum(r_list) / (np.arange(len(r_list))+1))
 
     r_list, j_list = test_strategy(Pi, 100)
     print("Testing score:", np.average(r_list))
     print("Avg step:", np.average(j_list))
-    plt.plot(np.cumsum(r_list) / (np.arange(100)+1))
+    ax = fig.add_subplot(122)
+    ax.set_title('test avg rewards')
+    ax.plot(np.cumsum(r_list) / (np.arange(len(r_list))+1))
     plt.show()
 
