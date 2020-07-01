@@ -25,8 +25,8 @@ update_model = trainer.minimize(loss)
 init = tf.initialize_all_variables()
 
 gamma = .99
-e = .1
-num_episodes = 1000
+e = .3
+num_episodes = 2000
 j_list_train = []
 r_list_train = []
 j_list_test = []
@@ -53,7 +53,7 @@ with tf.Session() as sess:
             r_all += r
             s = s1
             if d:
-                e = 1/((i/50) + 10)
+                e = 1/((i/100) + 5)
                 break
         r_list_train.append(r_all)
         j_list_train.append(j)
@@ -83,4 +83,12 @@ print("Training score:", np.average(r_list_train))
 print("Testing score:", np.average(r_list_test))
 print("Strategy:")
 print(Pi.reshape((4, 4)))
+fig = plt.figure(figsize=(15, 8))
+ax = fig.add_subplot(121)
+ax.set_title('train avg rewards')
+ax.plot(np.cumsum(r_list_train)/(np.arange(len(r_list_train))+1))
+ax = fig.add_subplot(122)
+ax.set_title('test avg rewards')
+ax.plot(np.cumsum(r_list_test)/(np.arange(len(r_list_test))+1))
+plt.show()
 
